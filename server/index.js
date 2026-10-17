@@ -23,8 +23,11 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(sanitizeRequestBody);
 
-// Serve frontend static assets
-app.use(express.static(path.join(__dirname, "../public")));
+// Serve frontend static assets with high-efficiency caching
+app.use(express.static(path.join(__dirname, "../public"), {
+  maxAge: process.env.NODE_ENV === "production" ? "1d" : 0,
+  etag: true
+}));
 
 // System & Health Endpoints
 app.get("/api/health", (req, res) => {

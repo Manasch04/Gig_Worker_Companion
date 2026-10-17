@@ -2031,3 +2031,192 @@ body.outdoor-mode .confirm-details-box {
   box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
 }
 
+/* 7. Clean Home Hub Navigation (Deduplication) */
+body.on-home-tab .nav-tabs {
+  display: none !important;
+}
+
+/* 8. Modern Audio Button (Listen / Stop Toggle) */
+.audio-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1.5px solid #10b981;
+  color: #10b981;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.audio-btn:hover {
+  background: #10b981;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.audio-btn.speaking {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: #ef4444;
+  color: #ef4444;
+  animation: pulseAudioSpeaking 1.4s infinite ease-in-out;
+}
+
+.audio-btn.speaking:hover {
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes pulseAudioSpeaking {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  50% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+body.outdoor-mode .audio-btn {
+  background: #ffffff;
+  border: 2px solid #000000;
+  color: #000000;
+}
+body.outdoor-mode .audio-btn.speaking {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+/* 9. Dynamic Action Loader Popup Modal */
+.action-loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1.5rem;
+  animation: fadeInLoader 0.25s ease-out;
+}
+
+.action-loader-overlay.hidden {
+  display: none !important;
+}
+
+.action-loader-card {
+  background: #0f172a;
+  border: 2px solid rgba(16, 185, 129, 0.5);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 440px;
+  padding: 2.25rem 2rem;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(16, 185, 129, 0.25);
+  animation: popLoaderCard 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.loader-spinner-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.25rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-glow-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #10b981;
+  border-right-color: #3b82f6;
+  border-bottom-color: #f59e0b;
+  animation: spinGlow 1s linear infinite;
+}
+
+@keyframes spinGlow {
+  to { transform: rotate(360deg); }
+}
+
+.loader-center-avatar {
+  font-size: 2.2rem;
+  animation: avatarBounce 1.5s infinite ease-in-out;
+}
+
+@keyframes avatarBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.loader-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+}
+
+.loader-sub {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.loader-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.loader-progress-inner {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, #10b981, #3b82f6, #10b981);
+  background-size: 200% 100%;
+  border-radius: 999px;
+  animation: indeterminateProgress 1.6s infinite ease-in-out;
+}
+
+@keyframes indeterminateProgress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+body.outdoor-mode .action-loader-card {
+  background: #ffffff;
+  border: 3px solid #000000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+body.outdoor-mode .loader-title {
+  color: #000000;
+}
+body.outdoor-mode .loader-sub {
+  color: #1e293b;
+}
+
+@keyframes fadeInLoader {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popLoaderCard {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+

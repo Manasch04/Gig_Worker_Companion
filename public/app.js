@@ -193,6 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function switchTab(tabName) {
+    document.body.classList.toggle("on-home-tab", tabName === "home");
+    stopAllSpeech();
+
     tabButtons.forEach((b) => {
       const isActive = b.getAttribute("data-tab") === tabName;
       b.classList.toggle("active", isActive);
@@ -295,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const homePlayGreetingAudio = document.getElementById("homePlayGreetingAudio");
   if (homePlayGreetingAudio) {
     homePlayGreetingAudio.addEventListener("click", () => {
-      speakText(getTimeGreeting());
+      toggleSpeech(homePlayGreetingAudio, getTimeGreeting());
     });
   }
 
@@ -304,7 +307,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (avatarBubbleBtn) {
     avatarBubbleBtn.addEventListener("click", () => {
       switchTab("chat");
-      speakText(getTimeGreeting());
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(() => {
+        const chatInput = document.getElementById("chatInput");
+        if (chatInput) chatInput.focus();
+      }, 200);
+      toggleSpeech(null, getTimeGreeting());
     });
   }
 
@@ -445,19 +453,97 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMicButton("micChatBtn", "chatInput");
 
   // --- TEXT TO SPEECH (AUDIO PLAYBACK) ---
-  function speakText(text) {
+  // --- ACTION LOADER POPUP MODAL ---
+  const actionLoaderModal = document.getElementById("actionLoaderModal");
+  const loaderTitle = document.getElementById("loaderTitle");
+  const loaderSub = document.getElementById("loaderSub");
+
+  function showActionLoader(title, sub) {
+    stopAllSpeech();
+    if (loaderTitle) loaderTitle.textContent = title;
+    if (loaderSub) loaderSub.textContent = sub;
+    if (actionLoaderModal) actionLoaderModal.classList.remove("hidden");
+  }
+
+  function hideActionLoader() {
+    if (actionLoaderModal) actionLoaderModal.classList.add("hidden");
+  }
+
+  // --- TEXT TO SPEECH & VOICE MANAGER (LISTEN / STOP TOGGLE) ---
+  let currentSpeakingBtn = null;
+
+  function stopAllSpeech() {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    if (currentSpeakingBtn) {
+      resetAudioBtnState(currentSpeakingBtn);
+      currentSpeakingBtn = null;
+    }
+  }
+
+  function resetAudioBtnState(btn) {
+    if (!btn) return;
+    btn.classList.remove("speaking");
+    const dict = window.gigTranslations?.[currentLanguage] || window.gigTranslations?.["hinglish"] || {};
+    const iconEl = btn.querySelector(".audio-btn-icon");
+    const textEl = btn.querySelector(".audio-btn-text");
+    if (iconEl) iconEl.textContent = "🔊";
+    if (textEl) {
+      textEl.textContent = dict.btnListen || "सुनें";
+    } else {
+      btn.textContent = "🔊 " + (dict.btnListen || "सुनें");
+    }
+  }
+
+  function toggleSpeech(btn, text) {
     if (!("speechSynthesis" in window)) {
       alert("Speech synthesis is not supported on your browser.");
       return;
     }
-    window.speechSynthesis.cancel();
-    if (!text) return;
+
+    // If currently speaking this same button -> STOP!
+    if (btn && currentSpeakingBtn === btn && window.speechSynthesis.speaking) {
+      stopAllSpeech();
+      return;
+    }
+
+    stopAllSpeech();
+    if (!text || !text.trim()) return;
+
+    if (btn) {
+      currentSpeakingBtn = btn;
+      btn.classList.add("speaking");
+      const dict = window.gigTranslations?.[currentLanguage] || window.gigTranslations?.["hinglish"] || {};
+      const iconEl = btn.querySelector(".audio-btn-icon");
+      const textEl = btn.querySelector(".audio-btn-text");
+      if (iconEl) iconEl.textContent = "⏹️";
+      if (textEl) {
+        textEl.textContent = dict.btnStop || "रोकें";
+      } else {
+        btn.textContent = "⏹️ " + (dict.btnStop || "रोकें");
+      }
+    }
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.95;
     utterance.pitch = 1.0;
     utterance.lang = getVoiceLang(currentLanguage);
+
+    utterance.onend = () => {
+      if (btn) resetAudioBtnState(btn);
+      if (currentSpeakingBtn === btn) currentSpeakingBtn = null;
+    };
+    utterance.onerror = () => {
+      if (btn) resetAudioBtnState(btn);
+      if (currentSpeakingBtn === btn) currentSpeakingBtn = null;
+    };
+
     window.speechSynthesis.speak(utterance);
+  }
+
+  function speakText(text) {
+    toggleSpeech(null, text);
   }
 
   // =========================================================================
@@ -1081,7 +1167,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (enableAudio) {
       const audioBtn = div.querySelector(".audio-btn");
-      if (audioBtn) audioBtn.onclick = () => speakText(text);
+      if (audioBtn) {
+        audioBtn.innerHTML = '<span class="audio-btn-icon">🔊</span>';
+        audioBtn.onclick = () => toggleSpeech(audioBtn, text);
+      }
     }
 
     return msgId;

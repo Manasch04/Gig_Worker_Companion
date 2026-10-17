@@ -20,6 +20,44 @@ function getGeminiClient(customApiKey) {
   return new GoogleGenerativeAI(apiKey);
 }
 
+
+function getLanguageDirective(language) {
+  const lang = (language || "hinglish").toLowerCase();
+  if (lang === "hinglish") {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "hinglish". You MUST respond in conversational HINGLISH using the LATIN/ENGLISH ALPHABET (Roman script, e.g. "Aapki shift me ₹150 penalty late delivery ke liye deduct hui hai..."). NEVER use Devanagari script for Hinglish.`;
+  } else if (lang === "hindi") {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "hindi". You MUST respond in pure simple Hindi using Devanagari script (हिन्दी).`;
+  } else if (lang === "punjabi") {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "punjabi". You MUST respond in Punjabi using Gurmukhi script (ਪੰਜਾਬੀ).`;
+  } else if (lang === "marathi") {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "marathi". You MUST respond in Marathi using Devanagari script (मराठी).`;
+  } else if (lang === "tamil") {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "tamil". You MUST respond in Tamil (தமிழ்).`;
+  } else if (lang === "bengali") {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "bengali". You MUST respond in Bengali (বাংলা).`;
+  } else {
+    return `CRITICAL LANGUAGE INSTRUCTION: The requested language is "english". You MUST respond in clear simple English.`;
+  }
+}
+
+async function executeGeminiWithFallback(client, promptOrContents, primaryModel = "gemini-2.5-flash") {
+  try {
+    const model = client.getGenerativeModel({ model: primaryModel });
+    return await model.generateContent(promptOrContents);
+  } catch (err) {
+    if (err.status === 429 || err.message?.includes("429") || err.message?.includes("quota")) {
+      console.warn("Quota limit reached on primary model, falling back to gemini-1.5-flash...");
+      try {
+        const fallbackModel = client.getGenerativeModel({ model: "gemini-1.5-flash" });
+        return await fallbackModel.generateContent(promptOrContents);
+      } catch (fallbackErr) {
+        throw fallbackErr;
+      }
+    }
+    throw err;
+  }
+}
+
 function getModel(client, modelName = "gemini-2.5-flash") {
   return client.getGenerativeModel({ model: modelName });
 }
@@ -37,7 +75,8 @@ You are the AI Gig Worker Companion. Your highest priority is building the WORKE
 
 Analyze the following worker earnings data:
 Input: ${JSON.stringify(payload)}
-Target Language: ${payload.language || "hinglish"} (Generate all explanations, summaries, and next steps strictly in this requested language: hinglish, hindi, english, punjabi, tamil, or bengali)
+Target Language: ${payload.language || "hinglish"}
+${getLanguageDirective(payload.language)}
 
 Calculate:
 1. Gross Earnings (base pay, tips, surge, incentives)
@@ -77,7 +116,7 @@ Respond ONLY with the raw JSON object. Do not include markdown codeblocks or bac
 `;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await executeGeminiWithFallback(client, prompt, "gemini-2.5-flash");
     const text = result.response.text().trim();
     const cleanJson = text.replace(/^```json/, "").replace(/^```/, "").replace(/```$/, "").trim();
     return JSON.parse(cleanJson);
@@ -98,6 +137,7 @@ async function verifyDocument({ fileBuffer, mimeType, textContent, language }, c
   const prompt = `
 You are an expert Document Verifier for Indian gig and informal workers.
 Target Language: ${language || "hinglish"}
+${getLanguageDirective(language)}
 
 Your goal:
 1. Extract all legible text from this payslip, penalty message, deactivation notice, or agreement.
@@ -156,7 +196,7 @@ Respond ONLY with the raw JSON object. Do not include markdown codeblocks or bac
       contents = [prompt, `Document Text Content:\n${textContent}`];
     }
 
-    const result = await model.generateContent(contents);
+    const result = await executeGeminiWithFallback(client, contents, "gemini-2.5-flash");
     const text = result.response.text().trim();
     const cleanJson = text.replace(/^```json/, "").replace(/^```/, "").replace(/```$/, "").trim();
     return JSON.parse(cleanJson);
@@ -181,6 +221,7 @@ Your task is to draft a polite, highly professional, fact-backed dispute letter/
 Dispute Input Details:
 ${JSON.stringify(details)}
 Target Language for Explanation: ${details.language || "hinglish"}
+${getLanguageDirective(details.language)}
 
 Generate:
 1. A formal English complaint letter suitable for platform Grievance Officer, App Support, or State Labour Commissioner.
@@ -284,6 +325,7 @@ ${JSON.stringify(safetyData)}
 Worker Emergency / Safety Situation:
 ${JSON.stringify(situation)}
 Target Language: ${situation.language || "hinglish"}
+${getLanguageDirective(situation.language)}
 
 Provide:
 1. Urgent 3-step immediate safety checklist (what to do in next 60 seconds).
@@ -323,6 +365,7 @@ async function chatWithCompanion({ message, history, language }, customApiKey) {
   const systemInstruction = `
 You are the "Gig Worker Companion" (साथी / தோழன்) — an AI assistant dedicated to delivery partners, cab/auto drivers, and daily-wage workers in India.
 Target Language: ${language || "hinglish"}.
+${getLanguageDirective(language)}
 
 Key Rules:
 1. Speak in friendly, respectful, simple language (Hindi, Hinglish, or English as requested).

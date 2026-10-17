@@ -107,9 +107,9 @@
           <div class="home-greeting-banner">
             <div class="greeting-text-wrap">
               <h2 class="greeting-headline" id="homeGreetingTitle">नमस्ते! मैं आपका साथी हूँ।</h2>
-              <p class="greeting-subtext" id="homeGreetingSub">आज की शिफ्ट में क्या हिसाब या मदद करनी है? नीचे कोई भी कार्ड चुनें या बोलें।</p>
+              <p class="greeting-subtext" id="homeGreetingSub" data-i18n="homeGreetingSub">आज की शिफ्ट में क्या हिसाब या मदद करनी है? नीचे कोई भी कार्ड चुनें या बोलें।</p>
             </div>
-            <button type="button" class="audio-btn" id="homePlayGreetingAudio">🔊 <span data-i18n="btnListen">सुनें</span></button>
+            <button type="button" class="audio-btn" id="homePlayGreetingAudio"><span class="audio-btn-icon">🔊</span> <span class="audio-btn-text" data-i18n="btnListen">सुनें</span></button>
           </div>
 
           <!-- Central Pulsing Mic Action -->
@@ -249,7 +249,7 @@
             <div class="results-content hidden" id="earningsResultData">
               <div class="result-badge-row">
                 <span class="badge verified" data-i18n="badgeVerifiedMath">✓ पारदर्शी प्रमाणित गणित</span>
-                <button type="button" class="audio-btn" id="playEarningsAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+                <button type="button" class="audio-btn" id="playEarningsAudio" title="Listen / Stop"><span class="audio-btn-icon">🔊</span> <span class="audio-btn-text" data-i18n="btnListen">सुनें</span></button>
               </div>
 
               <!-- Metrics Grid -->
@@ -362,7 +362,7 @@
             <div class="results-content hidden" id="docResultData">
               <div class="result-badge-row">
                 <span class="badge verified" data-i18n="badgeExtractedProof">✓ दस्तावेज़ से प्रमाणित सबूत</span>
-                <button type="button" class="audio-btn" id="playDocAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+                <button type="button" class="audio-btn" id="playDocAudio" title="Listen / Stop"><span class="audio-btn-icon">🔊</span> <span class="audio-btn-text" data-i18n="btnListen">सुनें</span></button>
               </div>
 
               <div class="doc-meta-grid">
@@ -477,7 +477,7 @@
             <div class="results-content hidden" id="grievanceResultData">
               <div class="result-badge-row">
                 <span class="badge verified" data-i18n="badgeVerifiedLetter">✓ प्रमाणित तथ्यों पर आधारित पत्र</span>
-                <button type="button" class="audio-btn" id="playGrievanceAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+                <button type="button" class="audio-btn" id="playGrievanceAudio" title="Listen / Stop"><span class="audio-btn-icon">🔊</span> <span class="audio-btn-text" data-i18n="btnListen">सुनें</span></button>
               </div>
 
               <!-- Native Language Summary for Worker -->
@@ -676,7 +676,7 @@
             <div class="results-content hidden" id="safetyResultData">
               <div class="result-badge-row">
                 <span class="badge verified danger-badge" data-i18n="badgeEmergency">🚨 तत्काल सुरक्षा निर्देश</span>
-                <button type="button" class="audio-btn" id="playSafetyAudio" data-i18n="btnListen">🔊 सुनें</button>
+                <button type="button" class="audio-btn" id="playSafetyAudio" title="Listen / Stop"><span class="audio-btn-icon">🔊</span> <span class="audio-btn-text" data-i18n="btnListen">सुनें</span></button>
               </div>
 
               <div class="urgent-banner">
@@ -812,6 +812,21 @@
       <div class="confirm-buttons-row">
         <button type="button" class="btn-confirm-yes" id="btnConfirmGenerate" data-i18n="btnConfirmYes">✅ हाँ, तैयार करें</button>
         <button type="button" class="btn-confirm-edit" id="btnConfirmDismiss" data-i18n="btnConfirmEdit">✏ बदलाव करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Action Loader Popup Modal -->
+  <div class="action-loader-overlay hidden" id="actionLoaderModal" role="dialog" aria-modal="true" aria-labelledby="loaderTitle">
+    <div class="action-loader-card">
+      <div class="loader-spinner-container">
+        <div class="loader-glow-ring"></div>
+        <div class="loader-center-avatar">🤖</div>
+      </div>
+      <h3 class="loader-title" id="loaderTitle">साथी काम कर रहा है...</h3>
+      <p class="loader-sub" id="loaderSub">कृपया प्रतीक्षा करें, आपकी जानकारी जांची जा रही है...</p>
+      <div class="loader-progress-bar">
+        <div class="loader-progress-inner"></div>
       </div>
     </div>
   </div>
