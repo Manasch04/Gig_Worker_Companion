@@ -70,7 +70,7 @@ function auditOperationalSanity({ grossEarnings, hoursWorked, operatingExpenses,
         severity: "WARNING",
         message: `${tripCount} deliveries in ${hours} hours (${tripsPerHour.toFixed(1)}/hr) exceeds normal physical urban speed.`
       });
-      integrityScore -= 20;
+      integrityScore -= 35;
     }
   }
 

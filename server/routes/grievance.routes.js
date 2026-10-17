@@ -12,7 +12,14 @@ const { verifyPartnerIdentity } = require("../services/verificationService");
 router.post("/draft", async (req, res) => {
   try {
     const apiKey = resolveApiKey(req);
-    const { platform, issueType, details, partnerId, disputedAmount, orderId, language } = req.body;
+    const { platform, issueType, details, partnerId, disputedAmount, orderId, language, facts } = req.body;
+    const grievanceDetails = details || facts;
+
+    if (!platform || !grievanceDetails) {
+      return res.status(400).json({
+        error: "Platform name and issue details/facts are required to draft a grievance."
+      });
+    }
 
     // Tier 1: Partner ID verification
     const identityAudit = verifyPartnerIdentity(platform, partnerId);

@@ -22,7 +22,7 @@ router.post("/check", async (req, res) => {
  * GET /api/schemes/list
  * Returns grounded list of verified welfare schemes with portal URLs and official helplines.
  */
-router.get("/list", (req, res) => {
+router.get(["/", "/list"], (req, res) => {
   res.json({
     schemes: schemesData,
     verifiedCount: schemesData.length,

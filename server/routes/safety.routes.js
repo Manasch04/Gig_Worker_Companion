@@ -13,8 +13,23 @@ router.post("/emergency", async (req, res) => {
     const result = await getSafetyGuidance(req.body, apiKey);
     res.json(result);
   } catch (err) {
-    console.error("Safety Guidance Route Error:", err.message);
-    res.status(500).json({ error: err.message || "Failed to fetch safety guidance." });
+    console.warn("Gemini Safety Call encountered an issue, falling back to grounded safetyData:", err.message);
+    const key = req.body.situationKey || "accident";
+    const fallbackGuidance = safetyData.emergencyChecklists?.[key] || safetyData.emergencyChecklists?.["accident"] || {
+      immediateAction: [
+        "सुरक्षित किनारे पर बाइक रोकें और अपनी चोट की जांच करें।",
+        "यदि गंभीर चोट है तो तुरंत 112 या 108 पर कॉल करें।",
+        "घटनास्थल और बाइक की फोटो लें तथा ऐप सपोर्ट को 'Accident on duty' मार्क करें।"
+      ],
+      primaryEmergencyNumber: "112",
+      emergencyServiceName: "National Emergency Helpline",
+      platformProtectionTip: "Order/Trip ko app me 'Emergency Breakdown' mark karein taaki company penalty na kaat sake.",
+      reassuringAdvice: "Ghabraiye mat, pehle apni jaan aur sehat par dhyan dijiye. Company ki penalty hum dispute karenge."
+    };
+    res.json({
+      ...fallbackGuidance,
+      isGroundedFallback: true
+    });
   }
 });
 
