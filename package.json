@@ -1,0 +1,33 @@
+{
+  "name": "gig_worker_companion",
+  "version": "1.0.0",
+  "description": "साथी — AI Companion for Gig & Informal Workers",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Manasch04/Gig_Worker_Companion.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Manasch04/Gig_Worker_Companion/issues"
+  },
+  "homepage": "https://github.com/Manasch04/Gig_Worker_Companion#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "multer": "^2.4.0"
+  }
+}

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Gig Worker Companion (साथी) | AI Assistant for Gig & Informal Workers</title>
+  <meta name="description" content="GenAI-powered, trust-first companion for gig workers in India. Multilingual earnings verification, document OCR, grievance drafting, safety, and welfare schemes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Top Bar Navigation -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title"><span data-i18n="brandTitle">साथी</span> <span class="brand-sub" data-i18n="brandSub">Gig Companion</span></h1>
+          <p class="brand-tagline" data-i18n="brandTagline">भारतीय गिग वर्कर्स के लिए भरोसेमंद साथी (Trust & Verification)</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- High-Contrast Language Selector Dropdown -->
+        <div class="lang-selector-custom" id="langDropdownContainer">
+          <span class="lang-globe-icon" aria-hidden="true">🌐</span>
+          <label for="langSelect" class="sr-only">Language / भाषा</label>
+          <select id="langSelect" class="styled-select" aria-label="Select Language">
+            <option value="hinglish" selected>Hinglish (बोलचाल)</option>
+            <option value="hindi">हिन्दी (Hindi)</option>
+            <option value="english">English</option>
+            <option value="punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="marathi">मराठी (Marathi)</option>
+            <option value="tamil">தமிழ் (Tamil)</option>
+            <option value="bengali">বাংলা (Bengali)</option>
+          </select>
+          <span class="select-chevron" aria-hidden="true">▼</span>
+        </div>
+
+        <!-- High-Contrast Outdoor Sun Mode (For motorcycle delivery riders under sun) -->
+        <button id="outdoorModeBtn" class="icon-btn" title="Toggle Outdoor Sun Visibility Mode" aria-label="Toggle Outdoor Sun Mode">
+          <span class="icon">☀️</span>
+          <span class="btn-text" data-i18n="sunModeText">Sun Mode</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Connected Journey Indicator Banner -->
+    <aside class="connected-workflow-bar" id="workflowBanner">
+      <div class="workflow-steps">
+        <span class="step active" id="flowStep1" data-i18n="flowStep1">1. कमाई लिखें</span>
+        <span class="step-arrow">→</span>
+        <span class="step" id="flowStep2" data-i18n="flowStep2">2. कटौती जांचें</span>
+        <span class="step-arrow">→</span>
+        <span class="step" id="flowStep3" data-i18n="flowStep3">3. शिकायत लिखें</span>
+        <span class="step-arrow">→</span>
+        <span class="step" id="flowStep4" data-i18n="flowStep4">4. सरकारी योजनाएं</span>
+      </div>
+    </aside>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="home" id="tab-home" role="tab" aria-selected="true" aria-controls="panel-home">
+        <span class="tab-icon">🏠</span>
+        <span class="tab-label" data-i18n="homeNavBtn">साथी होम</span>
+      </button>
+      <button class="tab-btn" data-tab="earnings" id="tab-earnings" role="tab" aria-selected="false" aria-controls="panel-earnings">
+        <span class="tab-icon">💰</span>
+        <span class="tab-label" data-i18n="tabEarnings">कमाई और हिसाब</span>
+      </button>
+      <button class="tab-btn" data-tab="document" id="tab-document" role="tab" aria-selected="false" aria-controls="panel-document">
+        <span class="tab-icon">📄</span>
+        <span class="tab-label" data-i18n="tabDocument">कागजात स्कैनर</span>
+      </button>
+      <button class="tab-btn" data-tab="grievance" id="tab-grievance" role="tab" aria-selected="false" aria-controls="panel-grievance">
+        <span class="tab-icon">⚖️</span>
+        <span class="tab-label" data-i18n="tabGrievance">शिकायत ड्राफ्टर</span>
+      </button>
+      <button class="tab-btn" data-tab="schemes" id="tab-schemes" role="tab" aria-selected="false" aria-controls="panel-schemes">
+        <span class="tab-icon">🏛️</span>
+        <span class="tab-label" data-i18n="tabSchemes">सरकारी योजनाएं</span>
+      </button>
+      <button class="tab-btn" data-tab="safety" id="tab-safety" role="tab" aria-selected="false" aria-controls="panel-safety">
+        <span class="tab-icon">🚨</span>
+        <span class="tab-label" data-i18n="tabSafety">सुरक्षा और सहायता</span>
+      </button>
+      <button class="tab-btn" data-tab="chat" id="tab-chat" role="tab" aria-selected="false" aria-controls="panel-chat">
+        <span class="tab-icon">🎙️</span>
+        <span class="tab-label" data-i18n="tabChat">बातचीत साथी</span>
+      </button>
+    </nav>
+
+    <!-- MAIN APP PANELS -->
+    <main class="content-container">
+
+      <!-- ================= 0. GOOGLE-STYLE HOME HUB ================= -->
+      <section class="tab-panel active" id="panel-home" role="tabpanel" aria-labelledby="tab-home">
+        <div class="home-hub">
+          <!-- Time-Based Greeting Banner -->
+          <div class="home-greeting-banner">
+            <div class="greeting-text-wrap">
+              <h2 class="greeting-headline" id="homeGreetingTitle">नमस्ते! मैं आपका साथी हूँ।</h2>
+              <p class="greeting-subtext" id="homeGreetingSub">आज की शिफ्ट में क्या हिसाब या मदद करनी है? नीचे कोई भी कार्ड चुनें या बोलें।</p>
+            </div>
+            <button type="button" class="audio-btn" id="homePlayGreetingAudio">🔊 <span data-i18n="btnListen">सुनें</span></button>
+          </div>
+
+          <!-- Central Pulsing Mic Action -->
+          <div class="home-mic-container">
+            <button type="button" class="big-center-mic-btn" id="homeBigMicBtn" aria-label="Tap to speak" title="बोलकर पूछें / Tap to speak">🎤</button>
+            <span class="mic-prompt-label" id="homeMicPrompt" data-i18n="tapToSpeakLabel">माइक दबाकर बोलें (Tap to Speak)</span>
+          </div>
+
+          <!-- 5 Big Touch Cards (56px+ height) -->
+          <div class="google-cards-grid">
+            <button type="button" class="google-touch-card card-kamai" data-target-tab="earnings">
+              <div class="card-touch-icon">💰</div>
+              <div class="card-touch-content">
+                <h3 class="card-touch-title" data-i18n="homeCard1Title">💰 कमाई का सच्चा हिसाब</h3>
+                <p class="card-touch-sub" data-i18n="homeCard1Sub">आज के ऑर्डर, पेट्रोल और असली बचत देखें</p>
+              </div>
+              <span class="card-touch-arrow">→</span>
+            </button>
+
+            <button type="button" class="google-touch-card card-kagaz" data-target-tab="document">
+              <div class="card-touch-icon">📄</div>
+              <div class="card-touch-content">
+                <h3 class="card-touch-title" data-i18n="homeCard2Title">📄 कागज़ और पे-स्लिप</h3>
+                <p class="card-touch-sub" data-i18n="homeCard2Sub">पे-स्लिप या मैसेज से गलत कटौती पकड़ें</p>
+              </div>
+              <span class="card-touch-arrow">→</span>
+            </button>
+
+            <button type="button" class="google-touch-card card-shikayat" data-target-tab="grievance">
+              <div class="card-touch-icon">✍</div>
+              <div class="card-touch-content">
+                <h3 class="card-touch-title" data-i18n="homeCard3Title">✍ शिकायत ड्राफ्टर</h3>
+                <p class="card-touch-sub" data-i18n="homeCard3Sub">गलत पेनल्टी या आईडी ब्लॉक का आधिकारिक लेटर बनाएं</p>
+              </div>
+              <span class="card-touch-arrow">→</span>
+            </button>
+
+            <button type="button" class="google-touch-card card-yojana" data-target-tab="schemes">
+              <div class="card-touch-icon">📋</div>
+              <div class="card-touch-content">
+                <h3 class="card-touch-title" data-i18n="homeCard4Title">📋 सरकारी योजनाएं</h3>
+                <p class="card-touch-sub" data-i18n="homeCard4Sub">ई-श्रम कार्ड, 5 लाख का इलाज व पेंशन जांचें</p>
+              </div>
+              <span class="card-touch-arrow">→</span>
+            </button>
+
+            <button type="button" class="google-touch-card card-suraksha" data-target-tab="safety">
+              <div class="card-touch-icon">🛡</div>
+              <div class="card-touch-content">
+                <h3 class="card-touch-title" data-i18n="homeCard5Title">🛡 सुरक्षा व आपातकाल</h3>
+                <p class="card-touch-sub" data-i18n="homeCard5Sub">112, 108 और दुर्घटना में 60-सेकंड तत्काल कदम</p>
+              </div>
+              <span class="card-touch-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 1. EARNINGS & MATH TAB ================= -->
+      <section class="tab-panel" id="panel-earnings" role="tabpanel" aria-labelledby="tab-earnings">
+        <div class="task-top-bar">
+          <button type="button" class="task-back-home-btn" data-target="home"><span class="arrow">⬅</span> <span data-i18n="homeNavBtn">🏠 घर (Home)</span></button>
+          <span class="task-pill-badge">काम 1: कमाई व गणित जांच</span>
+        </div>
+        <div class="panel-header">
+          <h2 data-i18n="earningsTitle">Earnings & Deduction Audit (कमाई और हिसाब)</h2>
+          <p class="panel-desc" data-i18n="earningsDesc">पारदर्शी गणित - हर एक रुपये का हिसाब। कंपनी की गलत कटौतियों को पकड़ें और असली मुनाफा जानें।</p>
+        </div>
+
+        <div class="quick-preset-bar">
+          <span class="preset-label" data-i18n="presetLabel">तुरंत टेस्ट करें:</span>
+          <button type="button" class="preset-chip" id="presetZomatoRider" data-i18n="presetZomato">Zomato राइडर (14 डिलीवरी, ₹150 पेनल्टी)</button>
+          <button type="button" class="preset-chip" id="presetUberDriver" data-i18n="presetUber">Uber ड्राइवर (8 ट्रिप, ₹300 कटौती)</button>
+          <button type="button" class="preset-chip" id="presetVoiceNote" data-i18n="presetVoice">बोलकर दर्ज करें (आवाज)</button>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Input Form -->
+          <div class="card form-card">
+            <h3 class="card-title" data-i18n="shiftDetailsTitle">दैनिक शिफ्ट की जानकारी</h3>
+            <form id="earningsForm">
+              <div class="form-group">
+                <label for="workerPlatform" data-i18n="labelPlatform">प्लेटफॉर्म चुनें</label>
+                <select id="workerPlatform" class="styled-input">
+                  <option value="Zomato">Zomato</option>
+                  <option value="Swiggy">Swiggy</option>
+                  <option value="Uber">Uber / Ola</option>
+                  <option value="Zepto">Zepto / Blinkit</option>
+                  <option value="Urban Company">Urban Company</option>
+                  <option value="Other">Daily Wage / Other</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="grossEarnings" data-i18n="labelGross">कंपनी से कुल मिला (₹)</label>
+                  <input type="number" id="grossEarnings" class="styled-input" placeholder="जैसे 1150" data-i18n-ph="phGross" required>
+                </div>
+                <div class="form-group">
+                  <label for="hoursWorked" data-i18n="labelHours">काम के कुल घंटे</label>
+                  <input type="number" step="0.5" id="hoursWorked" class="styled-input" placeholder="जैसे 8.5" data-i18n-ph="phHours" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fuelExpense" data-i18n="labelFuel">पेट्रोल / बाइक खर्च (₹)</label>
+                  <input type="number" id="fuelExpense" class="styled-input" placeholder="जैसे 250" data-i18n-ph="phFuel" required>
+                </div>
+                <div class="form-group">
+                  <label for="platformDeductions" data-i18n="labelDeductions">कटौती / पेनल्टी (₹)</label>
+                  <input type="number" id="platformDeductions" class="styled-input" placeholder="जैसे 150" data-i18n-ph="phDeductions">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="earningsNote" data-i18n="labelEarningsNote">अपनी भाषा में बोलें या लिखें (Voice Note)</label>
+                <div class="input-with-mic">
+                  <textarea id="earningsNote" class="styled-input" rows="3" placeholder="जैसे: आज 14 ऑर्डर किए, लेकिन कंपनी ने बिना वजह ₹150 लेट पेनल्टी काट ली..." data-i18n-ph="phEarningsNote"></textarea>
+                  <button type="button" id="micEarningsBtn" class="mic-btn" title="Speak to dictate" aria-label="Voice input">🎤</button>
+                </div>
+              </div>
+
+              <button type="submit" id="calculateEarningsBtn" class="primary-btn">
+                <span data-i18n="btnVerifyEarnings">हिसाब और कटौतियों की जांच करें</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Results Card -->
+          <div class="card results-card" id="earningsResultsCard">
+            <div class="empty-state" id="earningsEmptyState">
+              <span class="empty-icon">📊</span>
+              <p data-i18n="emptyEarnings">अपनी शिफ्ट की जानकारी भरें या ऊपर टेस्ट बटन दबाएं ताकि पारदर्शी गणित दिखे।</p>
+            </div>
+
+            <div class="results-content hidden" id="earningsResultData">
+              <div class="result-badge-row">
+                <span class="badge verified" data-i18n="badgeVerifiedMath">✓ पारदर्शी प्रमाणित गणित</span>
+                <button type="button" class="audio-btn" id="playEarningsAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+              </div>
+
+              <!-- Metrics Grid -->
+              <div class="stat-boxes">
+                <div class="stat-box">
+                  <span class="stat-label" data-i18n="statGross">कुल कमाई</span>
+                  <span class="stat-val" id="resGross">₹0</span>
+                </div>
+                <div class="stat-box minus">
+                  <span class="stat-label" data-i18n="statFuel">पेट्रोल व खर्च</span>
+                  <span class="stat-val" id="resExpenses">-₹0</span>
+                </div>
+                <div class="stat-box minus">
+                  <span class="stat-label" data-i18n="statDeductions">कटौतियां</span>
+                  <span class="stat-val" id="resDeductions">-₹0</span>
+                </div>
+                <div class="stat-box net">
+                  <span class="stat-label" data-i18n="statNet">असली बचत (Take-Home)</span>
+                  <span class="stat-val highlight" id="resNet">₹0</span>
+                </div>
+              </div>
+
+              <!-- Mathematical Formula Proof -->
+              <div class="proof-card">
+                <h4 class="proof-title" data-i18n="proofTitle">प्रमाणित गणित फॉर्मूला:</h4>
+                <code class="proof-formula" id="resFormula">Gross - Expenses - Cuts = Net</code>
+                <p class="hourly-stat"><span data-i18n="hourlyTitle">प्रति घंटा कमाई:</span> <strong id="resHourly">₹0 / hr</strong></p>
+              </div>
+
+              <!-- Deduction Audit Alert -->
+              <div class="audit-card" id="deductionAuditBox">
+                <h4 data-i18n="auditTitle">कटौती ऑडिट रिपोर्ट:</h4>
+                <div id="resDeductionList"></div>
+              </div>
+
+              <!-- Worker Explanation -->
+              <div class="explanation-box">
+                <h4 data-i18n="explanationTitle">सरल भाषा में समझें:</h4>
+                <p id="resExplanation" class="explanation-text"></p>
+                <div class="next-action-tip">
+                  <strong data-i18n="nextStepTitle">आपके लिए जरूरी अगला कदम:</strong>
+                  <span id="resNextStep"></span>
+                </div>
+              </div>
+
+              <!-- Connected Workflow Action -->
+              <div class="connected-action-bar" id="earningsToGrievanceBar">
+                <button type="button" class="action-btn" id="sendToGrievanceBtn">
+                  <span data-i18n="btnSendToGrievance">इस कटौती को सीधे शिकायत ड्राफ्टर में भेजें →</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. DOCUMENT SCANNER TAB ================= -->
+      <section class="tab-panel" id="panel-document" role="tabpanel" aria-labelledby="tab-document">
+        <div class="task-top-bar">
+          <button type="button" class="task-back-home-btn" data-target="home"><span class="arrow">⬅</span> <span data-i18n="homeNavBtn">🏠 घर (Home)</span></button>
+          <span class="task-pill-badge">काम 2: कागजात व पर्ची जांच</span>
+        </div>
+        <div class="panel-header">
+          <h2 data-i18n="docTitle">Document & Notice Verifier (कागजात और पे-स्लिप)</h2>
+          <p class="panel-desc" data-i18n="docDesc">पे-स्लिप, पेनल्टी एसएमएस, आईडी ब्लॉक नोटिस की फोटो अपलोड करें। जेमिनी विजन असली सबूत निकालकर सरल भाषा में समझाएगा।</p>
+        </div>
+
+        <div class="quick-preset-bar">
+          <span class="preset-label" data-i18n="presetLabel">तुरंत टेस्ट करें:</span>
+          <button type="button" class="preset-chip" id="presetDocPenalty" data-i18n="presetDoc1">सैंपल 1: लेट पेनल्टी मैसेज</button>
+          <button type="button" class="preset-chip" id="presetDocDeactivation" data-i18n="presetDoc2">सैंपल 2: आईडी ब्लॉक नोटिस</button>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Upload Area -->
+          <div class="card form-card">
+            <h3 class="card-title" data-i18n="docUploadTitle">फोटो अपलोड करें या मैसेज पेस्ट करें</h3>
+            <form id="docVerifyForm">
+              <div class="upload-dropzone" id="dropzone">
+                <input type="file" id="docFileInput" accept="image/*" class="file-input">
+                <div class="dropzone-content">
+                  <span class="upload-icon">📸</span>
+                  <p class="upload-prompt" data-i18n="uploadPrompt">फोटो खींचें या इमेज अपलोड करें</p>
+                  <p class="upload-sub" data-i18n="uploadSub">पे-स्लिप, पेनल्टी स्क्रीनशॉट, एग्रीमेंट (JPG, PNG)</p>
+                </div>
+                <div class="image-preview-wrapper hidden" id="previewWrapper">
+                  <img id="imagePreview" alt="Document Preview">
+                  <button type="button" id="removeImgBtn" class="remove-btn" data-i18n="btnRemove">✕ हटाएं</button>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 1rem;">
+                <label for="docTextInput" data-i18n="labelDocText">या मैसेज का टेक्स्ट यहां पेस्ट करें:</label>
+                <textarea id="docTextInput" class="styled-input" rows="4" placeholder="जैसे: Zomato: Order #9821 के लिए ₹150 पेनल्टी काटी गई..." data-i18n-ph="phDocText"></textarea>
+              </div>
+
+              <button type="submit" id="verifyDocBtn" class="primary-btn">
+                <span data-i18n="btnVerifyDoc">दस्तावेज़ जांचें और सबूत निकालें</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Verification Results -->
+          <div class="card results-card" id="docResultsCard">
+            <div class="empty-state" id="docEmptyState">
+              <span class="empty-icon">🔍</span>
+              <p data-i18n="emptyDoc">कागजात की फोटो अपलोड करें या टेस्ट सैंपल चुनें ताकि एआई असली सबूत निकाल सके।</p>
+            </div>
+
+            <div class="results-content hidden" id="docResultData">
+              <div class="result-badge-row">
+                <span class="badge verified" data-i18n="badgeExtractedProof">✓ दस्तावेज़ से प्रमाणित सबूत</span>
+                <button type="button" class="audio-btn" id="playDocAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+              </div>
+
+              <div class="doc-meta-grid">
+                <div><strong data-i18n="docPlatformLabel">कंपनी:</strong> <span id="docPlatform">-</span></div>
+                <div><strong data-i18n="docTypeLabel">प्रकार:</strong> <span id="docType">-</span></div>
+                <div><strong data-i18n="docPartnerLabel">पार्टनर आईडी:</strong> <span id="docPartnerId">-</span></div>
+                <div><strong data-i18n="docOrderLabel">ऑर्डर आईडी:</strong> <span id="docOrderId">-</span></div>
+              </div>
+
+              <!-- Verbatim Extracted Evidence Quotes -->
+              <div class="extracted-evidence-card">
+                <h4 data-i18n="proofFromDocTitle">दस्तावेज़ से निकाला गया हूबहू सबूत:</h4>
+                <div id="docEvidenceList" class="evidence-quotes"></div>
+              </div>
+
+              <!-- Disputed Items -->
+              <div class="dispute-audit-card">
+                <h4 data-i18n="disputeAnalysisTitle">चुनौती देने योग्य कारण:</h4>
+                <div id="docDisputedList"></div>
+              </div>
+
+              <div class="explanation-box">
+                <h4 data-i18n="explanationTitle">सरल भाषा में समझें:</h4>
+                <p id="docSimpleExplain" class="explanation-text"></p>
+                <div class="next-action-tip">
+                  <strong data-i18n="nextStepTitle">आपके लिए जरूरी अगला कदम:</strong>
+                  <span id="docNextAction"></span>
+                </div>
+              </div>
+
+              <!-- Connected Workflow: Send Document Data to Grievance Drafter -->
+              <div class="connected-action-bar">
+                <button type="button" class="action-btn" id="sendDocToGrievanceBtn">
+                  <span data-i18n="btnSendDocToGrievance">इस दस्तावेजी सबूत से शिकायत तैयार करें →</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. GRIEVANCE DRAFTER TAB ================= -->
+      <section class="tab-panel" id="panel-grievance" role="tabpanel" aria-labelledby="tab-grievance">
+        <div class="task-top-bar">
+          <button type="button" class="task-back-home-btn" data-target="home"><span class="arrow">⬅</span> <span data-i18n="homeNavBtn">🏠 घर (Home)</span></button>
+          <span class="task-pill-badge">काम 3: कानूनी व आधिकारिक शिकायत</span>
+        </div>
+        <div class="panel-header">
+          <h2 data-i18n="grievanceTitle">Factual Grievance Drafter (शिकायत और हक)</h2>
+          <p class="panel-desc" data-i18n="grievanceDesc">ऑर्डर आईडी और तारीखों पर आधारित आधिकारिक शिकायत पत्र। इसे सीधे सपोर्ट या लेबर कमिश्नर को भेज सकते हैं।</p>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Dispute Details Form -->
+          <div class="card form-card">
+            <h3 class="card-title" data-i18n="disputeFactsTitle">विवाद और सबूत के तथ्य</h3>
+            <form id="grievanceForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="grievancePlatform" data-i18n="labelGrievancePlatform">कंपनी / प्लेटफॉर्म</label>
+                  <input type="text" id="grievancePlatform" class="styled-input" placeholder="जैसे Zomato, Swiggy, Uber" data-i18n-ph="phGrievancePlatform" required>
+                </div>
+                <div class="form-group">
+                  <label for="grievancePartnerId" data-i18n="labelGrievancePartnerId">आपकी पार्टनर आईडी</label>
+                  <input type="text" id="grievancePartnerId" class="styled-input" placeholder="जैसे ZOM-78421" data-i18n-ph="phGrievancePartnerId" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="grievanceOrderId" data-i18n="labelGrievanceOrderId">ऑर्डर / ट्रिप आईडी</label>
+                  <input type="text" id="grievanceOrderId" class="styled-input" placeholder="जैसे ORD-98214" data-i18n-ph="phGrievanceOrderId">
+                </div>
+                <div class="form-group">
+                  <label for="grievanceAmount" data-i18n="labelGrievanceAmount">विवादित राशि (₹)</label>
+                  <input type="number" id="grievanceAmount" class="styled-input" placeholder="जैसे 150" data-i18n-ph="phGrievanceAmount">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="grievanceType" data-i18n="labelGrievanceType">समस्या का प्रकार</label>
+                <select id="grievanceType" class="styled-input">
+                  <option value="Unfair Delay / Delivery Penalty">Unfair Delay / Cancellation Penalty</option>
+                  <option value="Wrongful ID Deactivation / Block">Wrongful ID Deactivation / Blacklist</option>
+                  <option value="Unpaid Incentives / Surge">Unpaid Incentives / Rate Card Mismatch</option>
+                  <option value="Accident Insurance Claim Rejection">Accident Insurance Claim Non-settlement</option>
+                  <option value="Customer False Complaint">Customer False Complaint (Food Spilled / Rude Behavior)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="grievanceFacts" data-i18n="labelGrievanceFacts">असल में क्या हुआ था? (आपका बयान)</label>
+                <div class="input-with-mic">
+                  <textarea id="grievanceFacts" class="styled-input" rows="4" placeholder="जैसे: रेस्टोरेंट ने खाना बनाने में 25 मिनट लगाए, इसलिए 7 मिनट देरी हुई..." data-i18n-ph="phGrievanceFacts" required></textarea>
+                  <button type="button" id="micGrievanceBtn" class="mic-btn" title="Speak to dictate">🎤</button>
+                </div>
+              </div>
+
+              <button type="submit" id="generateGrievanceBtn" class="primary-btn">
+                <span data-i18n="btnGenerateGrievance">तथ्यों पर आधारित शिकायत पत्र तैयार करें</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Output Letter Card -->
+          <div class="card results-card" id="grievanceResultsCard">
+            <div class="empty-state" id="grievanceEmptyState">
+              <span class="empty-icon">⚖️</span>
+              <p data-i18n="emptyGrievance">विवरण भरें या कमाई/कागजात टैब से डेटा ट्रांसफर करें ताकि औपचारिक पत्र तैयार हो सके।</p>
+            </div>
+
+            <div class="results-content hidden" id="grievanceResultData">
+              <div class="result-badge-row">
+                <span class="badge verified" data-i18n="badgeVerifiedLetter">✓ प्रमाणित तथ्यों पर आधारित पत्र</span>
+                <button type="button" class="audio-btn" id="playGrievanceAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+              </div>
+
+              <!-- Native Language Summary for Worker -->
+              <div class="worker-note-card">
+                <h4 data-i18n="workerSummaryTitle">आपके लिए सरल सारांश (पत्र में क्या लिखा है):</h4>
+                <p id="grievanceWorkerSummary" class="explanation-text"></p>
+              </div>
+
+              <!-- Short In-App Chat Version -->
+              <div class="ticket-snippet-card">
+                <div class="ticket-header">
+                  <h4 data-i18n="quickChatTicketTitle">ऐप सपोर्ट / व्हाट्सएप के लिए छोटा मैसेज:</h4>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="copy-btn" id="copyChatTicketBtn" data-i18n="btnCopy">📋 कॉपी करें</button>
+                    <button type="button" class="whatsapp-btn" id="shareChatWhatsAppBtn" data-i18n="btnShareWhatsapp">📲 WhatsApp</button>
+                  </div>
+                </div>
+                <textarea id="grievanceShortTicket" class="code-like-textarea" rows="4" readonly></textarea>
+              </div>
+
+              <!-- Full Formal Letter -->
+              <div class="formal-letter-card">
+                <div class="ticket-header">
+                  <h4 id="grievanceSubject" data-i18n="formalLetterTitle">औपचारिक शिकायत पत्र (Formal Letter):</h4>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="copy-btn" id="copyFormalLetterBtn" data-i18n="btnCopyFull">📋 पूरा पत्र कॉपी करें</button>
+                    <button type="button" class="whatsapp-btn" id="shareFormalWhatsAppBtn" data-i18n="btnShareWhatsapp">📲 WhatsApp</button>
+                  </div>
+                </div>
+                <textarea id="grievanceFullLetter" class="code-like-textarea" rows="10" readonly></textarea>
+              </div>
+
+              <!-- Evidence Checklist -->
+              <div class="evidence-checklist-card">
+                <h4 data-i18n="evidenceChecklistTitle">शिकायत के साथ लगाने वाले जरूरी सबूत:</h4>
+                <ul id="grievanceChecklist" class="checklist-items"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. RIGHTS & WELFARE SCHEMES TAB ================= -->
+      <section class="tab-panel" id="panel-schemes" role="tabpanel" aria-labelledby="tab-schemes">
+        <div class="task-top-bar">
+          <button type="button" class="task-back-home-btn" data-target="home"><span class="arrow">⬅</span> <span data-i18n="homeNavBtn">🏠 घर (Home)</span></button>
+          <span class="task-pill-badge">काम 4: सरकारी कल्याणकारी योजनाएं</span>
+        </div>
+        <div class="panel-header">
+          <h2 data-i18n="schemesTitle">Verified Social Security & Welfare Schemes (सरकारी योजनाएं)</h2>
+          <p class="panel-desc" data-i18n="schemesDesc">भारत सरकार और राज्य श्रम विभाग के आधिकारिक पोर्टलों से प्रमाणित। हर योजना का टोल-फ्री हेल्पलाइन नंबर और आधिकारिक लिंक।</p>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Profile Check -->
+          <div class="card form-card">
+            <h3 class="card-title" data-i18n="checkEligibilityTitle">अपनी पात्रता और लाभ जांचें</h3>
+            <form id="schemesForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="workerAge" data-i18n="labelAge">आपकी उम्र (Age)</label>
+                  <input type="number" id="workerAge" class="styled-input" value="32" required>
+                </div>
+                <div class="form-group">
+                  <label for="workerState" data-i18n="labelState">राज्य चुनें (State)</label>
+                  <select id="workerState" class="styled-input">
+                    <option value="Rajasthan">Rajasthan (Gig Worker Welfare Act Active)</option>
+                    <option value="Karnataka">Karnataka (Gig Workers Social Security Scheme)</option>
+                    <option value="Delhi">Delhi NCT</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Other">Other States</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="workerWorkType" data-i18n="labelWorkType">काम का प्रकार</label>
+                  <select id="workerWorkType" class="styled-input">
+                    <option value="Delivery Partner">Delivery Partner (Zomato/Swiggy/Zepto/Blinkit)</option>
+                    <option value="Cab/Auto Driver">Cab / Auto Driver (Uber/Ola/Rapido)</option>
+                    <option value="Home Services">Home Services (Urban Company)</option>
+                    <option value="Daily Wage / Construction">Daily Wage / Construction Labor</option>
+                    <option value="Domestic Worker">Domestic House Helper</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="workerMonthlyIncome" data-i18n="labelIncome">मासिक आय (लगभग ₹)</label>
+                  <input type="number" id="workerMonthlyIncome" class="styled-input" value="18000" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="hasEpfo">
+                  <span data-i18n="hasEpfoText">मेरे पास पहले से कंपनी का पीएफ (EPFO) नहीं है</span>
+                </label>
+              </div>
+
+              <button type="submit" id="checkSchemesBtn" class="primary-btn">
+                <span data-i18n="btnCheckSchemes">सरकारी योजनाओं की पात्रता और कागजात जांचें</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Matched Schemes Output -->
+          <div class="card results-card" id="schemesResultsCard">
+            <div class="empty-state" id="schemesEmptyState">
+              <span class="empty-icon">🏛️</span>
+              <p data-i18n="emptySchemes">पात्रता बटन पर क्लिक करें ताकि आपके प्रोफाइल के अनुसार मुफ़्त बीमा और पेंशन योजनाएं मिल सकें।</p>
+            </div>
+
+            <div class="results-content hidden" id="schemesResultData">
+              <div class="result-badge-row">
+                <span class="badge verified" data-i18n="badgeGovtPortal">✓ आधिकारिक सरकारी पोर्टल व हेल्पलाइन द्वारा प्रमाणित</span>
+                <button type="button" class="audio-btn" id="playSchemesAudio" title="Listen in your language" data-i18n="btnListen">🔊 सुनें</button>
+              </div>
+
+              <div class="worker-note-card">
+                <h4 data-i18n="guidanceTitle">आपके लिए जरूरी सलाह:</h4>
+                <p id="schemesGuidanceText" class="explanation-text"></p>
+              </div>
+
+              <div id="schemesList" class="schemes-accordion"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. SAFETY & SOS TAB ================= -->
+      <section class="tab-panel" id="panel-safety" role="tabpanel" aria-labelledby="tab-safety">
+        <div class="task-top-bar">
+          <button type="button" class="task-back-home-btn" data-target="home"><span class="arrow">⬅</span> <span data-i18n="homeNavBtn">🏠 घर (Home)</span></button>
+          <span class="task-pill-badge">काम 5: सुरक्षा व 60-सेकंड SOS</span>
+        </div>
+        <div class="panel-header">
+          <h2 data-i18n="safetyTitle">Safety Guidance & Emergency SOS (सुरक्षा और सहायता)</h2>
+          <p class="panel-desc" data-i18n="safetyDesc">सड़क दुर्घटना, ग्राहक द्वारा बदतमीजी, अत्यधिक गर्मी या मौसम में तुरंत 60 सेकंड के अंदर क्या करें।</p>
+        </div>
+
+        <!-- Emergency Speed Dial -->
+        <div class="emergency-contacts-row">
+          <a href="tel:112" class="emergency-pill police">
+            <span class="em-num">112</span>
+            <span class="em-name" data-i18n="emNational">राष्ट्रीय आपातकालीन</span>
+          </a>
+          <a href="tel:108" class="emergency-pill ambulance">
+            <span class="em-num">108</span>
+            <span class="em-name" data-i18n="emAmbulance">एंबुलेंस</span>
+          </a>
+          <a href="tel:1091" class="emergency-pill women">
+            <span class="em-num">1091</span>
+            <span class="em-name" data-i18n="emWomen">महिला सुरक्षा हेल्पलाइन</span>
+          </a>
+          <a href="tel:1930" class="emergency-pill cyber">
+            <span class="em-num">1930</span>
+            <span class="em-name" data-i18n="emCyber">साइबर / फ्रॉड हेल्पलाइन</span>
+          </a>
+        </div>
+
+        <div class="two-col-grid">
+          <!-- Situational Guidance Trigger -->
+          <div class="card form-card">
+            <h3 class="card-title" data-i18n="safetyFormTitle">वर्तमान आपातकालीन स्थिति बताएं</h3>
+            <div class="quick-preset-bar">
+              <button type="button" class="preset-chip alert" id="presetAccident" data-i18n="presetAccident">सड़क दुर्घटना</button>
+              <button type="button" class="preset-chip alert" id="presetHarassment" data-i18n="presetHarassment">ग्राहक द्वारा बदतमीजी</button>
+              <button type="button" class="preset-chip alert" id="presetHeatwave" data-i18n="presetHeatwave">लू / भीषण गर्मी</button>
+            </div>
+
+            <form id="safetyForm">
+              <div class="form-group">
+                <label for="safetySituation" data-i18n="labelSituation">अभी क्या परेशानी हो रही है?</label>
+                <div class="input-with-mic">
+                  <textarea id="safetySituation" class="styled-input" rows="4" placeholder="जैसे: डिलीवरी के वक्त बाइक फिसल गई, पैर में चोट लगी है और ग्राहक चिल्ला रहा है..." data-i18n-ph="phSituation" required></textarea>
+                  <button type="button" id="micSafetyBtn" class="mic-btn" title="Speak to dictate">🎤</button>
+                </div>
+              </div>
+
+              <button type="submit" id="getSafetyBtn" class="primary-btn danger-btn">
+                <span data-i18n="btnGetSafety">तुरंत सुरक्षा निर्देश और सहायता प्राप्त करें</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Emergency Action Response -->
+          <div class="card results-card" id="safetyResultsCard">
+            <div class="empty-state" id="safetyEmptyState">
+              <span class="empty-icon">🛡️</span>
+              <p data-i18n="emptySafety">ऊपर दी गई आपातकालीन स्थिति चुनें या अपनी समस्या लिखें ताकि तुरंत मदद मिल सके।</p>
+            </div>
+
+            <div class="results-content hidden" id="safetyResultData">
+              <div class="result-badge-row">
+                <span class="badge verified danger-badge" data-i18n="badgeEmergency">🚨 तत्काल सुरक्षा निर्देश</span>
+                <button type="button" class="audio-btn" id="playSafetyAudio" data-i18n="btnListen">🔊 सुनें</button>
+              </div>
+
+              <div class="urgent-banner">
+                <span class="urgent-label" data-i18n="primaryCallLabel">सीधा फोन मिलाएं:</span>
+                <a href="#" id="safetyCallLink" class="call-action-btn">
+                  <span id="safetyEmergencyNumber">112</span> (<span id="safetyServiceName">National Emergency</span>)
+                </a>
+              </div>
+
+              <div class="checklist-card">
+                <h4 data-i18n="checklist60SecTitle">अगले 60 सेकंड में यह 3 कदम उठाएं:</h4>
+                <ol id="safetyStepsList" class="ordered-action-steps"></ol>
+              </div>
+
+              <div class="worker-note-card">
+                <h4 data-i18n="penaltyProtectTitle">कंपनी की पेनल्टी और सस्पेंशन से बचाव:</h4>
+                <p id="safetyProtectionTip" class="explanation-text"></p>
+              </div>
+
+              <div class="explanation-box">
+                <h4 data-i18n="reassuranceTitle">ज़रूरी सलाह:</h4>
+                <p id="safetyAdvice" class="explanation-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. VOICE COMPANION CHAT TAB ================= -->
+      <section class="tab-panel" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
+        <div class="task-top-bar">
+          <button type="button" class="task-back-home-btn" data-target="home"><span class="arrow">⬅</span> <span data-i18n="homeNavBtn">🏠 घर (Home)</span></button>
+          <span class="task-pill-badge">साथी बातचीत व आवाज सहायक</span>
+        </div>
+        <div class="panel-header">
+          <h2 data-i18n="chatTitle">Conversational Voice Assistant (साथी बातचीत)</h2>
+          <p class="panel-desc" data-i18n="chatDesc">बोलकर या लिखकर पूछें। गलत कटौती, आईडी ब्लॉक, ई-श्रम कार्ड या कानूनी अधिकारों की जानकारी पाएं।</p>
+        </div>
+
+        <div class="chat-container card">
+          <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+            <div class="chat-message bot">
+              <div class="message-bubble">
+                <p id="defaultBotGreetingText" data-i18n="defaultBotGreeting">नमस्ते! मैं आपका साथी हूँ। आप बोलकर या लिखकर अपनी कमाई, गलत कटी हुई पेनल्टी, सरकारी बीमा (e-Shram, Ayushman), या किसी भी परेशानी के बारे में पूछ सकते हैं।</p>
+                <span class="msg-time">Just now</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Prompts -->
+          <div class="suggested-prompts">
+            <button type="button" class="prompt-chip" id="chip1Btn" data-query="Mera ID bina bataye block kar diya, kya karun?" data-i18n="chip1">आईडी ब्लॉक हो गई, क्या करूं?</button>
+            <button type="button" class="prompt-chip" id="chip2Btn" data-query="e-Shram card se mujhe kya faayda milega aur kaise banega?" data-i18n="chip2">e-Shram कार्ड के क्या फायदे हैं?</button>
+            <button type="button" class="prompt-chip" id="chip3Btn" data-query="Bike ka petrol nikaalne ke baad kitna bacha kaise samjhoon?" data-i18n="chip3">पेट्रोल काटकर असली बचत कैसे निकालूं?</button>
+          </div>
+
+          <form id="chatForm" class="chat-input-bar">
+            <button type="button" id="micChatBtn" class="mic-btn" title="Speak message" aria-label="Microphone">🎤</button>
+            <label for="chatInput" class="sr-only">Type message</label>
+            <input type="text" id="chatInput" class="chat-input" placeholder="यहाँ लिखें या 🎤 माइक दबाकर बोलें..." data-i18n-ph="phChatInput" required>
+            <button type="submit" id="sendChatBtn" class="send-btn" aria-label="Send message">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p><strong data-i18n="footerBrand">साथी (Gig Worker Companion) — Google for Developers PromptWars {Build with AI}</strong></p>
+        <p class="disclaimer" data-i18n="footerDisclaimer">अस्वीकरण: यह सहायक आधिकारिक सरकारी योजनाओं और प्लेटफॉर्म नीतियों के आधार पर जानकारी और शिकायत पत्र तैयार करता है। यह प्रमाणित वकील का विकल्प नहीं है।</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- First-Touch Language Sheet (Modal) -->
+  <div class="lang-modal-overlay hidden" id="firstTouchLangModal">
+    <div class="lang-sheet-card">
+      <div class="sheet-avatar-circle">🤖</div>
+      <h2 class="lang-sheet-title">अपनी भाषा चुनें</h2>
+      <p class="lang-sheet-sub">Choose your language — Tapping unlocks voice companion</p>
+      <div class="lang-native-grid" id="langNativeGrid">
+        <button type="button" class="lang-tile" data-lang="hindi">
+          <span class="lang-script">हिन्दी</span>
+          <span class="lang-subtext">Hindi</span>
+        </button>
+        <button type="button" class="lang-tile" data-lang="hinglish">
+          <span class="lang-script">Hinglish</span>
+          <span class="lang-subtext">बोलचाल हिंदी</span>
+        </button>
+        <button type="button" class="lang-tile" data-lang="punjabi">
+          <span class="lang-script">ਪੰਜਾਬੀ</span>
+          <span class="lang-subtext">Punjabi</span>
+        </button>
+        <button type="button" class="lang-tile" data-lang="marathi">
+          <span class="lang-script">मराठी</span>
+          <span class="lang-subtext">Marathi</span>
+        </button>
+        <button type="button" class="lang-tile" data-lang="tamil">
+          <span class="lang-script">தமிழ்</span>
+          <span class="lang-subtext">Tamil</span>
+        </button>
+        <button type="button" class="lang-tile" data-lang="bengali">
+          <span class="lang-script">বাংলা</span>
+          <span class="lang-subtext">Bengali</span>
+        </button>
+        <button type="button" class="lang-tile" data-lang="english">
+          <span class="lang-script">English</span>
+          <span class="lang-subtext">English</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grievance Confirmation Modal ("Ye Likhun? Haan / Badlo") -->
+  <div class="confirm-modal-overlay hidden" id="grievanceConfirmModal">
+    <div class="confirm-card">
+      <div class="confirm-icon-circle">✍️</div>
+      <h3 data-i18n="confirmActionTitle">क्या यह शिकायत पत्र तैयार करें?</h3>
+      <p class="confirm-sub">आपके द्वारा दी गई जानकारी की पुष्टि करें:</p>
+      <div class="confirm-details-box" id="confirmDetailsBox">
+        <p>कंपनी: <strong id="previewPlatform">-</strong></p>
+        <p>पार्टनर आईडी: <strong id="previewPartnerId">-</strong></p>
+        <p>विवादित राशि: <strong id="previewAmount">-</strong></p>
+        <p>समस्या: <span id="previewFacts">-</span></p>
+      </div>
+      <div class="confirm-buttons-row">
+        <button type="button" class="btn-confirm-yes" id="btnConfirmGenerate" data-i18n="btnConfirmYes">✅ हाँ, तैयार करें</button>
+        <button type="button" class="btn-confirm-edit" id="btnConfirmDismiss" data-i18n="btnConfirmEdit">✏ बदलाव करें</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Persistent Floating Saathi Avatar -->
+  <aside class="saathi-floating-avatar" id="floatingSaathiAvatar" aria-label="Saathi Voice Assistant">
+    <div class="avatar-pulse-ring" id="avatarPulseRing"></div>
+    <button type="button" class="avatar-bubble-btn" id="avatarBubbleBtn" title="साथी से बात करें / Speak with Saathi">
+      <span class="avatar-emoji">🤖</span>
+      <span class="avatar-name">साथी</span>
+    </button>
+  </aside>
+
+  <script src="translations.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

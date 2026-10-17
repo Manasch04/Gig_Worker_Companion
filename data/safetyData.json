@@ -1,0 +1,78 @@
+{
+  "emergencyContacts": [
+    {
+      "service": "National Emergency Number",
+      "number": "112",
+      "description": "All-in-one emergency helpline for Police, Fire, and Ambulance across India."
+    },
+    {
+      "service": "Police Helpline",
+      "number": "100",
+      "description": "Direct Police control room for immediate protection or dispute violence."
+    },
+    {
+      "service": "Ambulance / Medical Emergency",
+      "number": "108",
+      "description": "Free 24/7 government emergency medical and ambulance dispatch."
+    },
+    {
+      "service": "Women Safety Helpline",
+      "number": "1091",
+      "description": "Dedicated round-the-clock emergency assistance for female workers."
+    },
+    {
+      "service": "National Cyber Crime Helpline",
+      "number": "1930",
+      "description": "Financial frauds, phishing scams, or unauthorized bank deductions."
+    },
+    {
+      "service": "National Highway Accident Emergency",
+      "number": "1033",
+      "description": "Roadside emergency, medical rescue, and towing on National Highways."
+    }
+  ],
+  "platformEscalation": [
+    {
+      "platform": "Zomato",
+      "riderSupport": "Rider App -> Support -> Urgent SOS / Rider Accident Assistance",
+      "insuranceHelpline": "1800-102-4488 (Acko General Insurance Partner)"
+    },
+    {
+      "platform": "Swiggy",
+      "riderSupport": "Delivery App -> Help Centre -> Delivery Partner Emergency",
+      "insuranceHelpline": "1800-266-7780 (Tata AIG Gig Partner Group Policy)"
+    },
+    {
+      "platform": "Uber",
+      "riderSupport": "Driver App -> Shield Icon -> Emergency Button (links to 112 & Uber Safety Team)",
+      "insuranceHelpline": "022-6822-7600 (Digit / Tata AIG On-Trip Cover)"
+    },
+    {
+      "platform": "Ola",
+      "riderSupport": "Ola Partner App -> SOS Alert -> Central Security Response Team",
+      "insuranceHelpline": "Chola MS / ICICI Lombard Group Cover via Driver App"
+    }
+  ],
+  "situationalProtocols": {
+    "roadAccident": [
+      "1. Ensure physical safety first: move to the side of the road if possible.",
+      "2. Call 108 (Ambulance) or 112 immediately if anyone is injured.",
+      "3. Take photos of the vehicle damage, road spot, and other vehicle's number plate.",
+      "4. Trigger the in-app SOS button on your platform (e.g. Swiggy/Zomato/Uber) to activate on-trip accidental insurance.",
+      "5. Do not sign any blank fault compromise papers on the spot before medical examination."
+    ],
+    "customerHarassment": [
+      "1. Remain polite but firm; do not engage in physical confrontation.",
+      "2. Activate in-app safety audio recording if supported, or step back to a public, well-lit area.",
+      "3. If threatened with violence, call 112 directly.",
+      "4. Mark the delivery/trip in the app with 'Safety Issue - Customer Aggression' before ending order so penalties are waived.",
+      "5. Note down the Customer Name, Order/Trip ID, and exact location."
+    ],
+    "heatwavePrecautions": [
+      "1. Drink water or ORS/lemon water every 45-60 minutes, even if not thirsty.",
+      "2. Wear light-coloured cotton clothes and cover your neck and face with a wet scarf/gamcha under your helmet.",
+      "3. Take 10-minute shaded breaks at platform rest stops, petrol pumps, or government 'Shramik Vishram Greh'.",
+      "4. Watch for heat exhaustion signs: dizziness, extreme headache, muscle cramps, vomiting. Stop riding immediately if feeling faint."
+    ]
+  }
+}

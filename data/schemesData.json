@@ -1,0 +1,118 @@
+[
+  {
+    "id": "e-shram",
+    "name": "e-Shram National Database for Unorganised Workers",
+    "officialUrl": "https://eshram.gov.in",
+    "helpline": "14434 (Toll-Free National Helpline)",
+    "administeringBody": "Ministry of Labour and Employment, Govt. of India",
+    "coverage": "Accidental Death & Permanent Disability cover of ₹2 Lakhs, Partial Disability cover of ₹1 Lakh through PMSBY, and direct linkage to social welfare schemes.",
+    "eligibility": {
+      "minAge": 16,
+      "maxAge": 59,
+      "workerType": ["Delivery Partner", "Cab/Auto Driver", "Domestic Worker", "Construction Worker", "Daily Wage Worker", "Platform Worker"],
+      "criteria": [
+        "Must be an unorganised or platform gig worker",
+        "Must not be an active member of EPFO (Provident Fund) or ESIC",
+        "Must not be an income tax payer"
+      ]
+    },
+    "documentsRequired": [
+      "Aadhaar Number (linked with active mobile)",
+      "Bank Account details (Account Number, IFSC)",
+      "Mobile number linked with Aadhaar"
+    ],
+    "verificationCheck": "UAN (Universal Account Number) card generated immediately upon Aadhaar OTP verification."
+  },
+  {
+    "id": "pmjay",
+    "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana (PM-JAY)",
+    "officialUrl": "https://pmjay.gov.in",
+    "helpline": "14555 / 1800-111-565",
+    "administeringBody": "National Health Authority (NHA), Govt. of India",
+    "coverage": "Cashless hospitalization health coverage up to ₹5,00,000 per family per year across 27,000+ empanelled government and private hospitals.",
+    "eligibility": {
+      "minAge": 0,
+      "maxAge": 100,
+      "workerType": ["All Informal & Platform Workers"],
+      "criteria": [
+        "Identified under SECC 2011 deprivation criteria or linked state health cards",
+        "Includes occupational categories: driver, conductor, helper, rickshaw puller, delivery provider, manual worker, construction laborer"
+      ]
+    },
+    "documentsRequired": [
+      "Aadhaar Card",
+      "Ration Card or Family ID",
+      "Active Mobile Number"
+    ],
+    "verificationCheck": "Check family name on mera.pmjay.gov.in or nearest Ayushman Mitra kiosk at any district hospital."
+  },
+  {
+    "id": "rajasthan-gig-act",
+    "name": "Rajasthan Platform Based Gig Workers (Registration and Welfare) Act",
+    "officialUrl": "https://labour.rajasthan.gov.in",
+    "helpline": "1800-180-6127",
+    "administeringBody": "Rajasthan Gig Worker Welfare Board",
+    "coverage": "Dedicated Social Security Fund financed by a fee on every gig platform transaction (1-2%). Provides accidental insurance, health benefits, retirement fund, and legal grievance redressal.",
+    "eligibility": {
+      "minAge": 18,
+      "maxAge": 60,
+      "workerType": ["Zomato", "Swiggy", "Uber", "Ola", "Zepto", "Blinkit", "Urban Company", "Porter"],
+      "criteria": [
+        "Operating as a platform-based gig worker within the state of Rajasthan",
+        "Aggregators must register every worker with the welfare board upon onboard"
+      ]
+    },
+    "documentsRequired": [
+      "Aggregator Partner ID (Zomato/Swiggy/Uber ID)",
+      "Aadhaar Card",
+      "Bank Account Details"
+    ],
+    "verificationCheck": "Unique Gig Worker ID issued by the Department of Labour, Govt. of Rajasthan."
+  },
+  {
+    "id": "karnataka-gig-bill",
+    "name": "Karnataka Platform-Based Gig Workers Social Security and Welfare Scheme",
+    "officialUrl": "https://labour.karnataka.gov.in",
+    "helpline": "155214",
+    "administeringBody": "Karnataka State Gig Workers Welfare Board",
+    "coverage": "₹4,00,000 insurance package (₹2 Lakh accidental cover + ₹2 Lakh hospitalisation/health coverage). Aggregators pay social security cess. Mandatory 14-day notice before platform deactivation.",
+    "eligibility": {
+      "minAge": 18,
+      "maxAge": 60,
+      "workerType": ["Delivery Partner", "Ride-Hailing Driver", "Home Services Partner"],
+      "criteria": [
+        "Working in Karnataka on digital platforms",
+        "Registered on Karnataka State Seva Sindhu or Labour Portal"
+      ]
+    },
+    "documentsRequired": [
+      "Partner App Profile screenshot showing active status",
+      "Aadhaar Card",
+      "Bank Passbook copy"
+    ],
+    "verificationCheck": "Seva Sindhu acknowledgement number and State Gig ID."
+  },
+  {
+    "id": "pmsym",
+    "name": "Pradhan Mantri Shram Yogi Maan-dhan (PM-SYM)",
+    "officialUrl": "https://maandhan.in",
+    "helpline": "1800-267-6888",
+    "administeringBody": "Ministry of Labour & Employment, LIC of India",
+    "coverage": "Guaranteed minimum monthly pension of ₹3,000 after attaining 60 years of age, with 50% family pension upon death.",
+    "eligibility": {
+      "minAge": 18,
+      "maxAge": 40,
+      "workerType": ["Delivery Partner", "Driver", "Domestic Worker", "Street Vendor"],
+      "criteria": [
+        "Monthly income ₹15,000 or below",
+        "Must not be covered under NPS, ESIC, or EPFO",
+        "Must not be an income tax assessee"
+      ]
+    },
+    "documentsRequired": [
+      "Aadhaar Card",
+      "Savings Bank Account / Jan Dhan Account with IFSC"
+    ],
+    "verificationCheck": "PM-SYM Pension Card issued by nearest Common Service Centre (CSC)."
+  }
+]
